@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administratora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .application {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .application h2 {
+            margin: 0;
+        }
+        .application p {
+            margin: 5px 0;
+        }
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .reject-button {
+            background-color: #dc3545;
+        }
+        .reject-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Panel Administratora</h1>
+    <div id="applicationsContainer"></div>
+
+    <script>
+        function renderApplications() {
+            const applicationsContainer = document.getElementById('applicationsContainer');
+            applicationsContainer.innerHTML = '';
+            let applications = JSON.parse(localStorage.getItem('applications')) || [];
+
+            applications.forEach((app, index) => {
+                const appDiv = document.createElement('div');
+                appDiv.className = 'application';
+
+                appDiv.innerHTML = `
+                    <h2>Podanie od: ${app.name}</h2>
+                    <p>Email: ${app.email}</p>
+                    <p>Dlaczego chce dołączyć: ${app.reason}</p>
+                    <button onclick="acceptApplication(${index})">Zatwierdź</button>
+                    <button class="reject-button" onclick="rejectApplication(${index})">Odrzuć</button>
+                `;
+
+                applicationsContainer.appendChild(appDiv);
+            });
+        }
+
+        function acceptApplication(index) {
+            let applications = JSON.parse(localStorage.getItem('applications'));
+            applications.splice(index, 1); // Usuń zaakceptowane podanie
+            localStorage.setItem('applications', JSON.stringify(applications));
+            renderApplications(); // Odśwież listę podań
+            alert('Podanie zostało zaakceptowane.');
+        }
+
+        function rejectApplication(index) {
+            let applications = JSON.parse(localStorage.getItem('applications'));
+            applications.splice(index, 1); // Usuń odrzucone podanie
+            localStorage.setItem('applications', JSON.stringify(applications));
+            renderApplications(); // Odśwież listę podań
+            alert('Podanie zostało odrzucone.');
+        }
+
+        // Renderuj podania po załadowaniu strony
+        renderApplications();
+    </script>
+</body>
+</html>
